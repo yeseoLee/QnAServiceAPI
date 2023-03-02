@@ -20,7 +20,7 @@ func NewAnswerHandler(e *echo.Echo, us domain.AnswerUseCase) {
 	}
 	e_answer := e.Group("/answers")
 	{
-		e_answer.GET("", handler.GetAnswers)
+		e_answer.GET("/:questionId", handler.GetAnswers)
 		e_answer.POST("/:id", handler.AddAnswer)
 		e_answer.PATCH("/:id", handler.EditAnswer)
 		e_answer.DELETE("/:id", handler.DeleteAnswer)

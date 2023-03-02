@@ -12,8 +12,8 @@ func NewAnswerUseCase(u domain.AnswerRepository) domain.AnswerUseCase {
 	}
 }
 
-func (u *answerUsecase) GetAll(option *domain.AnswersearchOption) ([]*domain.AnswerOutput, error) {
-	qList, err := u.answerRepo.FindAllByQuestionId(option.QuestionId)
+func (u *answerUsecase) GetAll(option *domain.AnswerSearchOption) ([]*domain.AnswerOutput, error) {
+	qList, err := u.answerRepo.FindAllByQuestionId(option.QuestionId, option.Limit, option.Offset)
 	if err != nil {
 		return nil, err
 	}
