@@ -81,7 +81,12 @@ func (h *AnswerHandler) EditAnswer(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "bad request")
 	}
 
-	res, err = h.AUseCase.Edit(idUint, map[string]interface{}{})
+	// TODO: Edit map[string]interface 개선
+	answerEdit := map[string]interface{}{}
+	answerEdit["Content"] = req.Content
+	answerEdit["Images"] = req.Images
+
+	res, err = h.AUseCase.Edit(idUint, answerEdit)
 	if err != nil {
 		log.Print(err)
 		return c.String(http.StatusInternalServerError, "InternalServerError")

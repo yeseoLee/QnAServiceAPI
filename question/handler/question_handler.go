@@ -96,7 +96,13 @@ func (h *QuestionHandler) EditQuestion(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "bad request")
 	}
 
-	res, err = h.QUseCase.Edit(idUint, map[string]interface{}{})
+	// TODO: Edit map[string]interface 개선
+	questionEdit := map[string]interface{}{}
+	questionEdit["Title"] = req.Title
+	questionEdit["Content"] = req.Content
+	questionEdit["Images"] = req.Images
+
+	res, err = h.QUseCase.Edit(idUint, questionEdit)
 	if err != nil {
 		log.Print(err)
 		return c.String(http.StatusInternalServerError, "InternalServerError")
