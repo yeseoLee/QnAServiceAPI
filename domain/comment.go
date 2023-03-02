@@ -7,7 +7,7 @@ type Comment struct {
 	AnswerId   uint   `json:"answerId"`
 	Content    string `json:"content"`
 	WriterId   string `json:"writerId"`
-	CreateTime string `json:"createTime"`
+	CreatedAt  string `json:"createdAt"`
 	// TODO:
 	// 좋아요 수
 }
@@ -25,7 +25,7 @@ type CommentOutput struct {
 	AnswerId   uint   `json:"answerId"`
 	Content    string `json:"content"`
 	WriterId   string `json:"writerId"`
-	CreateTime string `json:"createTime"`
+	CreatedAt  string `json:"createdAt"`
 }
 
 type CommentRepository interface {
