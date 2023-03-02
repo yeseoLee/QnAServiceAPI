@@ -4,7 +4,7 @@ import "time"
 
 // Entity
 type Question struct {
-	Id        uint      `json:"id"`
+	Id        uint64    `json:"id"`
 	WriterId  string    `json:"writerId"`
 	Title     string    `json:"title"`
 	Content   string    `json:"body"`
@@ -27,7 +27,7 @@ type QuestionInput struct {
 }
 
 type QuestionOutput struct {
-	Id        uint      `json:"id"`
+	Id        uint64    `json:"id"`
 	WriterId  string    `json:"writer"`
 	Title     string    `json:"title"`
 	Content   string    `json:"body"`
@@ -49,19 +49,19 @@ type QuestionOrderOption struct {
 }
 
 type QuestionRepository interface {
-	FindById(id uint) (*Question, error)
+	FindById(id uint64) (*Question, error)
 	FindAll(limit, offset int) ([]*Question, error)
 	//FindAllByTags(tags []string) ([]*Question, error)
 	Create(questionInput *QuestionInput) (*Question, error)
-	Update(id uint, questionUpdate map[string]interface{}) (*Question, error)
-	Delete(id uint) error
+	Update(id uint64, questionUpdate map[string]interface{}) (*Question, error)
+	Delete(id uint64) error
 }
 
 type QuestionUseCase interface {
-	Get(id uint) (*QuestionOutput, error)
+	Get(id uint64) (*QuestionOutput, error)
 	GetAll(option *QuestionSearchOption) ([]*QuestionOutput, error)
 	Create(questionInput *QuestionInput) (*QuestionOutput, error)
-	Edit(WriterId string, id uint, questionEdit map[string]interface{}) (*QuestionOutput, error)
-	Accept(WriterId string, id uint) error
-	Delete(WriterId string, id uint) error
+	Edit(id uint64, questionEdit map[string]interface{}) (*QuestionOutput, error)
+	Accept(id uint64) error
+	Delete(id uint64) error
 }

@@ -21,7 +21,7 @@ type QuestionRepository struct {
 	DBEngine *sql.DB
 }
 
-func (r *QuestionRepository) FindById(id uint) (*model.Question, error) {
+func (r *QuestionRepository) FindById(id uint64) (*model.Question, error) {
 	var q model.Question
 
 	// Query
@@ -70,14 +70,14 @@ func (r *QuestionRepository) Create(questionInput *model.QuestionInput) (*model.
 
 	// Check
 	id, err := result.LastInsertId()
-	question.Id = uint(id)
+	question.Id = uint64(id)
 	if err != nil {
 		return question, err
 	}
 	return question, nil
 }
 
-func (r *QuestionRepository) Update(id uint, questionUpdate map[string]interface{}) (*model.Question, error) {
+func (r *QuestionRepository) Update(id uint64, questionUpdate map[string]interface{}) (*model.Question, error) {
 	// TODO: map key-value check & make query logic
 	var question *model.Question
 
@@ -99,7 +99,7 @@ func (r *QuestionRepository) Update(id uint, questionUpdate map[string]interface
 	return question, nil
 }
 
-func (r *QuestionRepository) Delete(id uint) error {
+func (r *QuestionRepository) Delete(id uint64) error {
 	// Query
 	result, err := r.DBEngine.Exec("DELETE FROM `tbQuestion` WHERE id = ?", id)
 	if err != nil {

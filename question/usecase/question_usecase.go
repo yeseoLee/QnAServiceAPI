@@ -12,7 +12,7 @@ func NewQuestionUseCase(u domain.QuestionRepository) domain.QuestionUseCase {
 	}
 }
 
-func (u *questionUsecase) Get(id uint) (*domain.QuestionOutput, error) {
+func (u *questionUsecase) Get(id uint64) (*domain.QuestionOutput, error) {
 	q, err := u.questionRepo.FindById(id)
 	if err != nil {
 		return nil, err
@@ -43,7 +43,7 @@ func (u *questionUsecase) Create(questionInput *domain.QuestionInput) (*domain.Q
 	return qo, nil
 }
 
-func (u *questionUsecase) Edit(WriterId string, id uint, questionEdit map[string]interface{}) (*domain.QuestionOutput, error) {
+func (u *questionUsecase) Edit(id uint64, questionEdit map[string]interface{}) (*domain.QuestionOutput, error) {
 	q, err := u.questionRepo.Update(id, questionEdit)
 	if err != nil {
 		return nil, err
@@ -52,13 +52,13 @@ func (u *questionUsecase) Edit(WriterId string, id uint, questionEdit map[string
 	return qo, nil
 }
 
-func (u *questionUsecase) Accept(WriterId string, id uint) error {
+func (u *questionUsecase) Accept(id uint64) error {
 	// TODO: 채택 로직 개선
 	_, err := u.questionRepo.Update(id, map[string]interface{}{"IsAccept": true})
 	return err
 }
 
-func (u *questionUsecase) Delete(WriterId string, id uint) error {
+func (u *questionUsecase) Delete(id uint64) error {
 	return u.questionRepo.Delete(id)
 }
 
