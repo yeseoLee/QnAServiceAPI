@@ -53,7 +53,7 @@ func (u *questionUsecase) Edit(WriterId string, id uint, questionEdit map[string
 }
 
 func (u *questionUsecase) Accept(WriterId string, id uint) error {
-	// TODO
+	// TODO: 채택 로직 개선
 	_, err := u.questionRepo.Update(id, map[string]interface{}{"IsAccept": true})
 	return err
 }
