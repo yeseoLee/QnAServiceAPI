@@ -24,7 +24,10 @@ type QuestionRepository struct {
 func (r *QuestionRepository) FindById(id uint) (*model.Question, error) {
 	var q model.Question
 
+	// Query
 	row := r.DBEngine.QueryRow("SELECT id, title, content, writerId, images, createdAt,updatedAt FROM tbQuestion WHERE id = ?", id)
+
+	// Read
 	err := row.Scan(&q.Id, &q.Title, &q.Content, &q.WriterId, &q.Images, &q.CreatedAt, &q.UpdatedAt)
 	switch {
 	case err == sql.ErrNoRows:
@@ -38,12 +41,14 @@ func (r *QuestionRepository) FindById(id uint) (*model.Question, error) {
 func (r *QuestionRepository) FindAll(limit, offset int) ([]*model.Question, error) {
 	var qList []*model.Question
 
+	// Query
 	rows, err := r.DBEngine.Query("SELECT id, title, content, writerId, images, createdAt,updatedAt FROM tbQuestion LIMIT ? OFFSET ?", limit, offset)
 	if err != nil {
 		return nil, err
 	}
 	defer rows.Close()
 
+	// Read
 	for rows.Next() {
 		var q model.Question
 		rows.Scan(&q.Id, &q.Title, &q.Content, &q.WriterId, &q.Images, &q.CreatedAt, &q.UpdatedAt)
@@ -55,12 +60,15 @@ func (r *QuestionRepository) FindAll(limit, offset int) ([]*model.Question, erro
 
 func (r *QuestionRepository) Create(questionInput *model.QuestionInput) (*model.Question, error) {
 	var question *model.Question
-	result, err := r.DBEngine.Exec("INSERT INTO `tbQuestion`(`Title`,`Content`,`WriterId`,`Images`,`CreatedAt`) VALUES (?, ?, ?, ?, now())",
+
+	// Query
+	result, err := r.DBEngine.Exec("INSERT INTO tbQuestion (`Title`,`Content`,`WriterId`,`Images`,`CreatedAt`) VALUES (?, ?, ?, ?, now())",
 		questionInput.Title, questionInput.Content, questionInput.WriterId, questionInput.Images)
 	if err != nil {
 		return question, err
 	}
 
+	// Check
 	id, err := result.LastInsertId()
 	question.Id = uint(id)
 	if err != nil {
@@ -72,20 +80,33 @@ func (r *QuestionRepository) Create(questionInput *model.QuestionInput) (*model.
 func (r *QuestionRepository) Update(id uint, questionUpdate map[string]interface{}) (*model.Question, error) {
 	// TODO: map key-value check & make query logic
 	var question *model.Question
-	_, err := r.DBEngine.Exec("UPDATE tbQuestion SET Title = ?, Content = ?, Images = ?, updatedAt = now() WHERE id = ?",
+
+	// Query
+	result, err := r.DBEngine.Exec("UPDATE tbQuestion SET Title = ?, Content = ?, Images = ?, updatedAt = now() WHERE id = ?",
 		questionUpdate["Title"], questionUpdate["Content"], questionUpdate["Images"])
 	if err != nil {
 		return question, err
+	}
+
+	// Check
+	rows, err := result.RowsAffected()
+	if err != nil {
+		return question, err
+	}
+	if rows != 1 {
+		return question, fmt.Errorf("expected to affect 1 row, affected %d", rows)
 	}
 	return question, nil
 }
 
 func (r *QuestionRepository) Delete(id uint) error {
+	// Query
 	result, err := r.DBEngine.Exec("DELETE FROM `tbQuestion` WHERE id = ?", id)
 	if err != nil {
 		return err
 	}
 
+	// Check
 	rows, err := result.RowsAffected()
 	if err != nil {
 		return err
@@ -93,5 +114,5 @@ func (r *QuestionRepository) Delete(id uint) error {
 	if rows != 1 {
 		return fmt.Errorf("expected to affect 1 row, affected %d", rows)
 	}
-	return err
+	return nil
 }

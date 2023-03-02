@@ -14,7 +14,7 @@ type Question struct {
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 	DeletedAt time.Time `json:"deleteddAt"`
-	// ---------
+	// TODO:
 	// 좋아요 수
 	// 조회 수
 }
@@ -39,10 +39,12 @@ type QuestionOutput struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
-type QuestionsearchOption struct {
+type QuestionSearchOption struct {
 	Title    string `json:"title"`
 	Content  string `json:"body"`
 	WriterId string `json:"writerId"`
+	Limit    int    `json:"limit"`
+	Offset   int    `json:"offset"`
 }
 
 type QuestionOrderOption struct {
@@ -59,7 +61,7 @@ type QuestionRepository interface {
 
 type QuestionUseCase interface {
 	Get(id uint) (*QuestionOutput, error)
-	GetAll(limit, offset int) ([]*QuestionOutput, error)
+	GetAll(option *QuestionSearchOption) ([]*QuestionOutput, error)
 	Create(questionInput *QuestionInput) (*QuestionOutput, error)
 	Edit(WriterId string, id uint, questionEdit map[string]interface{}) (*QuestionOutput, error)
 	Accept(WriterId string, id uint) error

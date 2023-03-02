@@ -20,8 +20,9 @@ func (u *questionUsecase) Get(id uint) (*domain.QuestionOutput, error) {
 	qo := u.transferOutput(q)
 	return qo, nil
 }
-func (u *questionUsecase) GetAll(limit, offset int) ([]*domain.QuestionOutput, error) {
-	qList, err := u.questionRepo.FindAll(limit, offset)
+
+func (u *questionUsecase) GetAll(option *domain.QuestionSearchOption) ([]*domain.QuestionOutput, error) {
+	qList, err := u.questionRepo.FindAll(option.Limit, option.Offset)
 	if err != nil {
 		return nil, err
 	}
