@@ -13,9 +13,7 @@ type Answer struct {
 	CreatedAt  time.Time `json:"createdAt"`
 	UpdatedAt  time.Time `json:"updatedAt"`
 	DeletedAt  time.Time `json:"deleteddAt"`
-	// TODO:
-	// 좋아요 수
-	// 조회 수
+	// TODO: 좋아요 수, 조회 수 -> Redis & Batch Insert
 }
 
 // DTO

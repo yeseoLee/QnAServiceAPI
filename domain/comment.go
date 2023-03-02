@@ -8,8 +8,7 @@ type Comment struct {
 	Content    string `json:"content"`
 	WriterId   string `json:"writerId"`
 	CreatedAt  string `json:"createdAt"`
-	// TODO:
-	// 좋아요 수
+	// TODO: 좋아요 수 -> Redis & Batch Insert
 }
 
 // DTO
