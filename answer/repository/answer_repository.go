@@ -20,7 +20,7 @@ type AnswerRepository struct {
 	DBEngine *sql.DB
 }
 
-func (r *AnswerRepository) FindAllByQuestionId(id uint, limit int, offset int) ([]*model.Answer, error) {
+func (r *AnswerRepository) FindAllByQuestionId(id uint64, limit int, offset int) ([]*model.Answer, error) {
 
 	var aList []*model.Answer
 
@@ -55,14 +55,14 @@ func (r *AnswerRepository) Create(answerInput *model.AnswerInput) (*model.Answer
 
 	// Check
 	id, err := result.LastInsertId()
-	answer.Id = uint(id)
+	answer.Id = uint64(id)
 	if err != nil {
 		return answer, err
 	}
 	return answer, nil
 }
 
-func (r *AnswerRepository) Update(id uint, answerUpdate map[string]interface{}) (*model.Answer, error) {
+func (r *AnswerRepository) Update(id uint64, answerUpdate map[string]interface{}) (*model.Answer, error) {
 	// TODO: map key-value check & make query logic
 	var answer *model.Answer
 
@@ -84,7 +84,7 @@ func (r *AnswerRepository) Update(id uint, answerUpdate map[string]interface{}) 
 	return answer, nil
 }
 
-func (r *AnswerRepository) Delete(id uint) error {
+func (r *AnswerRepository) Delete(id uint64) error {
 	// Query
 	result, err := r.DBEngine.Exec("DELETE tbAnswer WHERE id = ?", id)
 	if err != nil {

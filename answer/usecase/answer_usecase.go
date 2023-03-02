@@ -34,7 +34,7 @@ func (u *answerUsecase) Create(answerInput *domain.AnswerInput) (*domain.AnswerO
 	return qo, nil
 }
 
-func (u *answerUsecase) Edit(WriterId string, id uint, answerEdit map[string]interface{}) (*domain.AnswerOutput, error) {
+func (u *answerUsecase) Edit(id uint64, answerEdit map[string]interface{}) (*domain.AnswerOutput, error) {
 	q, err := u.answerRepo.Update(id, answerEdit)
 	if err != nil {
 		return nil, err
@@ -43,13 +43,13 @@ func (u *answerUsecase) Edit(WriterId string, id uint, answerEdit map[string]int
 	return qo, nil
 }
 
-func (u *answerUsecase) Accept(WriterId string, id uint) error {
+func (u *answerUsecase) Accept(id uint64) error {
 	// TODO: 채택 로직 개선
 	_, err := u.answerRepo.Update(id, map[string]interface{}{"IsAccept": true})
 	return err
 }
 
-func (u *answerUsecase) Delete(WriterId string, id uint) error {
+func (u *answerUsecase) Delete(id uint64) error {
 	return u.answerRepo.Delete(id)
 }
 

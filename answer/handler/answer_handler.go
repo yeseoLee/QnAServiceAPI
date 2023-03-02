@@ -1,8 +1,10 @@
 package answer
 
 import (
+	"log"
 	"net/http"
 	"qna/domain"
+	"strconv"
 
 	"github.com/labstack/echo/v4"
 )
@@ -11,6 +13,7 @@ type AnswerHandler struct {
 	AUseCase domain.AnswerUseCase
 }
 
+// TODO: 객체 계층 분리
 type Req struct{}
 type Res struct{}
 
@@ -28,14 +31,74 @@ func NewAnswerHandler(e *echo.Echo, us domain.AnswerUseCase) {
 }
 
 func (h *AnswerHandler) GetAnswers(c echo.Context) error {
-	return c.String(http.StatusOK, "GetAnswers")
+	var req *domain.AnswerSearchOption
+	var res []*domain.AnswerOutput
+
+	err := c.Bind(&req)
+	if err != nil {
+		log.Print(err)
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+
+	res, err = h.AUseCase.GetAll(req)
+	if err != nil {
+		log.Print(err)
+		return c.String(http.StatusInternalServerError, "InternalServerError")
+	}
+
+	return c.JSON(http.StatusOK, res)
 }
+
 func (h *AnswerHandler) AddAnswer(c echo.Context) error {
-	return c.String(http.StatusOK, "AddAnswer")
+	var req *domain.AnswerInput
+	var res *domain.AnswerOutput
+
+	err := c.Bind(&req)
+	if err != nil {
+		log.Print(err)
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+
+	res, err = h.AUseCase.Create(req)
+	if err != nil {
+		log.Print(err)
+		return c.String(http.StatusInternalServerError, "InternalServerError")
+	}
+
+	return c.JSON(http.StatusOK, res)
 }
+
 func (h *AnswerHandler) EditAnswer(c echo.Context) error {
-	return c.String(http.StatusOK, "EditAnswer")
+	var req *domain.AnswerInput
+	var res *domain.AnswerOutput
+
+	idString := c.FormValue("id")
+	idUint, _ := strconv.ParseUint(idString, 10, 16)
+
+	err := c.Bind(&req)
+	if err != nil {
+		log.Print(err)
+		return c.String(http.StatusBadRequest, "bad request")
+	}
+
+	res, err = h.AUseCase.Edit(idUint, map[string]interface{}{})
+	if err != nil {
+		log.Print(err)
+		return c.String(http.StatusInternalServerError, "InternalServerError")
+	}
+
+	return c.JSON(http.StatusOK, res)
 }
 func (h *AnswerHandler) DeleteAnswer(c echo.Context) error {
+
+	idString := c.FormValue("id")
+	idUint, _ := strconv.ParseUint(idString, 10, 16)
+
+	err := h.AUseCase.Delete(idUint)
+	if err != nil {
+		log.Print(err)
+		return c.String(http.StatusInternalServerError, "InternalServerError")
+	}
+
 	return c.String(http.StatusOK, "DeleteAnswer")
 }

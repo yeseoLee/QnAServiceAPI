@@ -4,8 +4,8 @@ import "time"
 
 // Entity
 type Answer struct {
-	Id         uint      `json:"id"`
-	QuestionId uint      `json:"questionId"`
+	Id         uint64    `json:"id"`
+	QuestionId uint64    `json:"questionId"`
 	Content    string    `json:"content"`
 	WriterId   string    `json:"writerId"`
 	Images     []string  `json:"images"`
@@ -18,15 +18,15 @@ type Answer struct {
 
 // DTO
 type AnswerInput struct {
-	QuestionId uint     `json:"questionId"`
+	QuestionId uint64   `json:"questionId"`
 	Content    string   `json:"content"`
 	WriterId   string   `json:"writerId"`
 	Images     []string `json:"images"`
 }
 
 type AnswerOutput struct {
-	Id         uint      `json:"id"`
-	QuestionId uint      `json:"questionId"`
+	Id         uint64    `json:"id"`
+	QuestionId uint64    `json:"questionId"`
 	Content    string    `json:"content"`
 	WriterId   string    `json:"writerId"`
 	Images     []string  `json:"images"`
@@ -36,7 +36,7 @@ type AnswerOutput struct {
 }
 
 type AnswerSearchOption struct {
-	QuestionId uint   `json:"questionId"`
+	QuestionId uint64 `json:"questionId"`
 	WriterId   string `json:"writerId"`
 	Limit      int    `json:"limit"`
 	Offset     int    `json:"offset"`
@@ -45,17 +45,17 @@ type AnswerSearchOption struct {
 type AnswerOrderOption struct{}
 
 type AnswerRepository interface {
-	FindAllByQuestionId(id uint, limit int, offset int) ([]*Answer, error)
+	FindAllByQuestionId(id uint64, limit int, offset int) ([]*Answer, error)
 	//FindAllByWriterId(writerId string, limit int, offset int) ([]*Answer, error)
 	Create(answerInput *AnswerInput) (*Answer, error)
-	Update(id uint, answerUpdate map[string]interface{}) (*Answer, error)
-	Delete(id uint) error
+	Update(id uint64, answerUpdate map[string]interface{}) (*Answer, error)
+	Delete(id uint64) error
 }
 
 type AnswerUseCase interface {
 	GetAll(option *AnswerSearchOption) ([]*AnswerOutput, error)
 	Create(answerInput *AnswerInput) (*AnswerOutput, error)
-	Edit(WriterId string, id uint, answerUpdate map[string]interface{}) (*AnswerOutput, error)
-	Accept(QuestionWriterId string, id uint) error
-	Delete(WriterId string, id uint) error
+	Edit(id uint64, answerUpdate map[string]interface{}) (*AnswerOutput, error)
+	Accept(id uint64) error
+	Delete(id uint64) error
 }
