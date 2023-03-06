@@ -9,8 +9,8 @@ type Comment struct {
 	AnswerId   uint      `json:"answerId"`
 	WriterId   string    `json:"writerId"`
 	Content    string    `json:"content"`
-	CreatedAt  string    `json:"createdAt"`
-	DeletedAt  time.Time `json:"deleteddAt"`
+	CreatedAt  time.Time `json:"createdAt"`
+	DeletedAt  time.Time `json:"deletedAt"`
 	// TODO: 좋아요 수 -> Redis & Batch Insert
 }
 
@@ -27,8 +27,8 @@ type CommentOutput struct {
 	AnswerId   uint      `json:"answerId"`
 	WriterId   string    `json:"writerId"`
 	Content    string    `json:"content"`
-	CreatedAt  string    `json:"createdAt"`
-	DeletedAt  time.Time `json:"deleteddAt"`
+	CreatedAt  time.Time `json:"createdAt"`
+	DeletedAt  time.Time `json:"deletedAt"`
 }
 
 type CommentRepository interface {

@@ -12,7 +12,7 @@ type Answer struct {
 	IsAccepted bool      `json:"isAccepted"`
 	CreatedAt  time.Time `json:"createdAt"`
 	UpdatedAt  time.Time `json:"updatedAt"`
-	DeletedAt  time.Time `json:"deleteddAt"`
+	DeletedAt  time.Time `json:"deletedAt"`
 	// TODO: 좋아요 수, 조회 수 -> Redis & Batch Insert
 }
 
