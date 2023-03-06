@@ -56,14 +56,14 @@ func initProfile() string {
 	var profile string
 	profile = os.Getenv("GO_PROFILE")
 	if len(profile) <= 0 {
-		profile = "local"
+		profile = "config_local"
 	}
 	fmt.Println("GOLANG_PROFILE: " + profile)
 	return profile
 }
 
 func setRuntimeConfig(profile string) {
-	viper.AddConfigPath(".")
+	viper.AddConfigPath("./config/")
 	viper.SetConfigName(profile)
 	viper.SetConfigType("yaml")
 	err := viper.ReadInConfig()
