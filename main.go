@@ -11,15 +11,23 @@ import (
 
 func main() {
 	// datasource
-	ds := datasource.
-		MySQLInstance().
-		MySQLConnectionInfo(
-			config.GetInstance().Mysql.Host,
-			config.GetInstance().Mysql.Port,
-			config.GetInstance().Mysql.DatabaseName,
-			config.GetInstance().Mysql.User,
-			config.GetInstance().Mysql.Password).
-		MySQLConnect()
+	var ds datasource.DataSource
+	if config.Conf.DB.DBType == "mysql" {
+		ds = datasource.
+			MySQLInstance().
+			MySQLConnectionInfo(
+				config.Conf.DB.Mysql.Host,
+				config.Conf.DB.Mysql.Port,
+				config.Conf.DB.Mysql.DatabaseName,
+				config.Conf.DB.Mysql.User,
+				config.Conf.DB.Mysql.Password).
+			MySQLConnect()
+	} else if config.Conf.DB.DBType == "sqlie3" {
+		ds = datasource.
+			SqliteInstance().
+			SqliteConnectionInfo("").
+			SqliteConnect()
+	}
 
 	////// Echo Web Framework //////
 	e := echo.New()
@@ -42,5 +50,5 @@ func registRoutes(ds datasource.DataSource, e *echo.Echo) {
 }
 
 func runServer(e *echo.Echo) {
-	e.Logger.Fatal(e.Start(config.GetInstance().Service.Port))
+	e.Logger.Fatal(e.Start(config.Conf.Service.Port))
 }
