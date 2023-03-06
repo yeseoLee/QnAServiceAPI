@@ -26,7 +26,7 @@ func main() {
 }
 
 func setDataSource() (ds datasource.DataSource) {
-	if config.Conf.DB.DBType == "mysql" {
+	if config.Conf.DB.DBType == datasource.DRIVER_NAME_MYSQL { // mysql
 		ds = datasource.
 			MySQLInstance().
 			MySQLConnectionInfo(
@@ -36,10 +36,10 @@ func setDataSource() (ds datasource.DataSource) {
 				config.Conf.DB.Mysql.User,
 				config.Conf.DB.Mysql.Password).
 			MySQLConnect()
-	} else if config.Conf.DB.DBType == "sqlie3" {
+	} else if config.Conf.DB.DBType == datasource.DRIVER_NAME_SQLITE { // sqlite
 		ds = datasource.
 			SqliteInstance().
-			SqliteConnectionInfo("").
+			SqliteConnectionInfo(config.Conf.DB.Sqlite.FilePath).
 			SqliteConnect()
 	} else {
 		log.Fatal(fmt.Errorf("config.yaml DBType Error"))
