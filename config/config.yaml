@@ -1,0 +1,13 @@
+service:
+    port: ":8080"
+    root: ""
+db:
+  dbType: sqlite3
+  sqlite3:
+    filePath:"test.sqlite3"
+  mysql:
+    host: "127.0.0.1"
+    port: 3306
+    databaseName: "dbName"
+    user: "root"
+    password: "1234
