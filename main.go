@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+	"log"
 	"qna/config"
 	"qna/datasource"
 	"qna/question"
@@ -11,7 +13,19 @@ import (
 
 func main() {
 	// datasource
-	var ds datasource.DataSource
+	ds := setDataSource()
+
+	////// Echo Web Framework //////
+	e := echo.New()
+	// Middleware
+	registMiddleware(e)
+	// Routes
+	registRoutes(ds, e)
+	// Start server
+	runServer(e)
+}
+
+func setDataSource() (ds datasource.DataSource) {
 	if config.Conf.DB.DBType == "mysql" {
 		ds = datasource.
 			MySQLInstance().
@@ -27,16 +41,10 @@ func main() {
 			SqliteInstance().
 			SqliteConnectionInfo("").
 			SqliteConnect()
+	} else {
+		log.Fatal(fmt.Errorf("config.yaml DBType Error"))
 	}
-
-	////// Echo Web Framework //////
-	e := echo.New()
-	// Middleware
-	registMiddleware(e)
-	// Routes
-	registRoutes(ds, e)
-	// Start server
-	runServer(e)
+	return
 }
 
 func registMiddleware(e *echo.Echo) {
