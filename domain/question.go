@@ -7,10 +7,10 @@ type Question struct {
 	Id        uint64    `json:"id"`
 	WriterId  string    `json:"writerId"`
 	Title     string    `json:"title"`
-	Content   string    `json:"body"`
+	Content   string    `json:"content"`
 	Tags      []string  `json:"tags"`
 	Images    []string  `json:"images"`
-	IsAccept  bool      `json:"IsAccept"`
+	IsAccept  bool      `json:"isAccept"`
 	CreatedAt time.Time `json:"createdAt"`
 	UpdatedAt time.Time `json:"updatedAt"`
 	DeletedAt time.Time `json:"deleteddAt"`
@@ -21,25 +21,25 @@ type Question struct {
 type QuestionInput struct {
 	WriterId string   `json:"writerId"`
 	Title    string   `json:"title"`
-	Content  string   `json:"body"`
+	Content  string   `json:"content"`
 	Tags     []string `json:"tags"`
 	Images   []string `json:"images"`
 }
 
 type QuestionOutput struct {
 	Id        uint64    `json:"id"`
-	WriterId  string    `json:"writer"`
+	WriterId  string    `json:"writerId"`
 	Title     string    `json:"title"`
-	Content   string    `json:"body"`
+	Content   string    `json:"content"`
 	Tags      []string  `json:"tags"`
 	Images    []string  `json:"images"`
-	IsAccept  bool      `json:"IsAccept"`
+	IsAccept  bool      `json:"isAccept"`
 	UpdatedAt time.Time `json:"updatedAt"`
 }
 
 type QuestionSearchOption struct {
 	Title    string `json:"title"`
-	Content  string `json:"body"`
+	Content  string `json:"content"`
 	WriterId string `json:"writerId"`
 	Limit    int    `json:"limit"`
 	Offset   int    `json:"offset"`

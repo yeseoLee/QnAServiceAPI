@@ -1,13 +1,16 @@
 package domain
 
+import "time"
+
 // Entity
 type Comment struct {
-	Id         uint   `json:"id"`
-	QuestionId uint   `json:"questionId"`
-	AnswerId   uint   `json:"answerId"`
-	Content    string `json:"content"`
-	WriterId   string `json:"writerId"`
-	CreatedAt  string `json:"createdAt"`
+	Id         uint      `json:"id"`
+	QuestionId uint      `json:"questionId"`
+	AnswerId   uint      `json:"answerId"`
+	WriterId   string    `json:"writerId"`
+	Content    string    `json:"content"`
+	CreatedAt  string    `json:"createdAt"`
+	DeletedAt  time.Time `json:"deleteddAt"`
 	// TODO: 좋아요 수 -> Redis & Batch Insert
 }
 
@@ -15,16 +18,17 @@ type Comment struct {
 type CommentInput struct {
 	QuestionId uint   `json:"questionId"`
 	AnswerId   uint   `json:"answerId"`
-	Content    string `json:"content"`
 	WriterId   string `json:"writerId"`
+	Content    string `json:"content"`
 }
 
 type CommentOutput struct {
-	QuestionId uint   `json:"questionId"`
-	AnswerId   uint   `json:"answerId"`
-	Content    string `json:"content"`
-	WriterId   string `json:"writerId"`
-	CreatedAt  string `json:"createdAt"`
+	QuestionId uint      `json:"questionId"`
+	AnswerId   uint      `json:"answerId"`
+	WriterId   string    `json:"writerId"`
+	Content    string    `json:"content"`
+	CreatedAt  string    `json:"createdAt"`
+	DeletedAt  time.Time `json:"deleteddAt"`
 }
 
 type CommentRepository interface {

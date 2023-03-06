@@ -6,10 +6,10 @@ import "time"
 type Answer struct {
 	Id         uint64    `json:"id"`
 	QuestionId uint64    `json:"questionId"`
-	Content    string    `json:"content"`
 	WriterId   string    `json:"writerId"`
+	Content    string    `json:"content"`
 	Images     []string  `json:"images"`
-	IsAccepted bool      `json:"IsAccepted"`
+	IsAccepted bool      `json:"isAccepted"`
 	CreatedAt  time.Time `json:"createdAt"`
 	UpdatedAt  time.Time `json:"updatedAt"`
 	DeletedAt  time.Time `json:"deleteddAt"`
@@ -19,18 +19,18 @@ type Answer struct {
 // DTO
 type AnswerInput struct {
 	QuestionId uint64   `json:"questionId"`
-	Content    string   `json:"content"`
 	WriterId   string   `json:"writerId"`
+	Content    string   `json:"content"`
 	Images     []string `json:"images"`
 }
 
 type AnswerOutput struct {
 	Id         uint64    `json:"id"`
 	QuestionId uint64    `json:"questionId"`
-	Content    string    `json:"content"`
 	WriterId   string    `json:"writerId"`
+	Content    string    `json:"content"`
 	Images     []string  `json:"images"`
-	IsAccepted bool      `json:"IsAccepted"`
+	IsAccepted bool      `json:"isAccepted"`
 	CreatedAt  time.Time `json:"createdAt"`
 	UpdatedAt  time.Time `json:"updatedAt"`
 }
