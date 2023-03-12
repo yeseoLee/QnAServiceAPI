@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"strings"
 
 	"qna/datasource"
 	model "qna/domain"
@@ -23,12 +24,21 @@ type QuestionRepository struct {
 
 func (r *QuestionRepository) FindById(id uint64) (*model.Question, error) {
 	var q model.Question
+	var imagesString string
+	var tagsString string
 
 	// Query
-	row := r.DBEngine.QueryRow("SELECT id, title, content, writerId, images, createdAt,updatedAt FROM tbQuestion WHERE id = ?", id)
+	row := r.DBEngine.QueryRow("SELECT id, title, content, writerId, tags, images, createdAt, updatedAt FROM tbQuestion WHERE id = ?", id)
 
 	// Read
-	err := row.Scan(&q.Id, &q.Title, &q.Content, &q.WriterId, &q.Images, &q.CreatedAt, &q.UpdatedAt)
+	err := row.Scan(&q.Id, &q.Title, &q.Content, &q.WriterId, tagsString, imagesString, &q.CreatedAt, &q.UpdatedAt)
+
+	// Type Casting
+	tags := strings.Split(tagsString, ",")
+	images := strings.Split(imagesString, ",")
+	q.Tags = tags
+	q.Images = images
+
 	switch {
 	case err == sql.ErrNoRows:
 		return nil, errors.New("no data")
@@ -42,7 +52,7 @@ func (r *QuestionRepository) FindAll(limit, offset int) ([]*model.Question, erro
 	var qList []*model.Question
 
 	// Query
-	rows, err := r.DBEngine.Query("SELECT id, title, content, writerId, images, createdAt,updatedAt FROM tbQuestion LIMIT ? OFFSET ?", limit, offset)
+	rows, err := r.DBEngine.Query("SELECT id, title, content, writerId, images, createdAt, updatedAt FROM tbQuestion LIMIT ? OFFSET ?", limit, offset)
 	if err != nil {
 		return nil, err
 	}
@@ -61,9 +71,13 @@ func (r *QuestionRepository) FindAll(limit, offset int) ([]*model.Question, erro
 func (r *QuestionRepository) Create(questionInput *model.QuestionInput) (*model.Question, error) {
 	var question *model.Question
 
+	// Type Casting
+	imagesString := strings.Join(questionInput.Images, ",")
+	tagsString := strings.Join(questionInput.Tags, ",")
+
 	// Query
-	result, err := r.DBEngine.Exec("INSERT INTO tbQuestion (`Title`,`Content`,`WriterId`,`Images`,`CreatedAt`) VALUES (?, ?, ?, ?, now())",
-		questionInput.Title, questionInput.Content, questionInput.WriterId, questionInput.Images)
+	result, err := r.DBEngine.Exec("INSERT INTO tbQuestion (`title`,`content`,`writerId`, `tags`, `images`,`createdAt`, `updatedAt`) VALUES (?, ?, ?, ?, ?, now(), now())",
+		questionInput.Title, questionInput.Content, questionInput.WriterId, tagsString, imagesString)
 	if err != nil {
 		return question, err
 	}
@@ -81,9 +95,21 @@ func (r *QuestionRepository) Update(id uint64, questionUpdate map[string]interfa
 	// TODO: map key-value check & make query logic
 	var question *model.Question
 
+	// Type Casting
+	images, ok := questionUpdate["Images"].([]string)
+	if !ok {
+		return question, fmt.Errorf("not expected type for Images, wants: []string")
+	}
+	tags, ok := questionUpdate["Tags"].([]string)
+	if !ok {
+		return question, fmt.Errorf("not expected type for Tags, wants: []string")
+	}
+	imagesString := strings.Join(images, ",")
+	tagsString := strings.Join(tags, ",")
+
 	// Query
-	result, err := r.DBEngine.Exec("UPDATE tbQuestion SET Title = ?, Content = ?, Images = ?, updatedAt = now() WHERE id = ?",
-		questionUpdate["Title"], questionUpdate["Content"], questionUpdate["Images"])
+	result, err := r.DBEngine.Exec("UPDATE tbQuestion SET Title = ?, Content = ?, Tags =?, Images = ?, UpdatedAt = now() WHERE id = ?",
+		questionUpdate["Title"], questionUpdate["Content"], tagsString, imagesString)
 	if err != nil {
 		return question, err
 	}
