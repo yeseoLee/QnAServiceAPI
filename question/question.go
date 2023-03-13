@@ -1,6 +1,7 @@
 package question
 
 import (
+	"log"
 	"qna/datasource"
 	handler "qna/question/handler"
 	repository "qna/question/repository"
@@ -13,7 +14,7 @@ func RegistQuestionRoute(ds datasource.DataSource, e *echo.Echo) {
 	// Question
 	qr, err := repository.NewQuestionRepository(ds)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	qu := usecase.NewQuestionUseCase(qr)
 	handler.NewQuestionHandler(e, qu)

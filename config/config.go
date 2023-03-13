@@ -2,6 +2,7 @@ package config
 
 import (
 	"fmt"
+	"log"
 	"os"
 
 	"github.com/spf13/viper"
@@ -61,11 +62,11 @@ func setRuntimeConfig(profile string) {
 	viper.SetConfigType("yaml")
 	err := viper.ReadInConfig()
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	err = viper.Unmarshal(&instance)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 
 	/*

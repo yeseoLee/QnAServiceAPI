@@ -1,6 +1,7 @@
 package comment
 
 import (
+	"log"
 	handler "qna/comment/handler"
 	repository "qna/comment/repository"
 	usecase "qna/comment/usecase"
@@ -13,7 +14,7 @@ func RegistCommentRoute(ds datasource.DataSource, e *echo.Echo) {
 	// comment
 	cr, err := repository.NewCommentRepository(ds)
 	if err != nil {
-		panic(err)
+		log.Fatal(err)
 	}
 	cu := usecase.NewCommentUseCase(cr)
 	handler.NewCommentHandler(e, cu)
