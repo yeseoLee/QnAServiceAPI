@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"qna/datasource"
 	model "qna/domain"
+	"qna/util"
 )
 
 func NewCommentRepository(ds datasource.DataSource) (*CommentRepository, error) {
@@ -42,10 +43,11 @@ func (r *CommentRepository) FindAllByPostId(id uint, limit int, offset int) ([]*
 
 func (r *CommentRepository) Create(commentInput *model.CommentInput) (*model.Comment, error) {
 	var comment *model.Comment
+	now := util.DateTimeNow()
 
 	// Query
-	result, err := r.DBEngine.Exec("INSERT INTO tbComment (`questionId`, `answerId`, `Content`, `WriterId`, `CreatedAt`) VALUES (?, ?, ?, ?, now())",
-		commentInput.QuestionId, commentInput.AnswerId, commentInput.Content, commentInput.WriterId)
+	result, err := r.DBEngine.Exec("INSERT INTO tbComment (`questionId`, `answerId`, `Content`, `WriterId`, `CreatedAt`) VALUES (?, ?, ?, ?, ?)",
+		commentInput.QuestionId, commentInput.AnswerId, commentInput.Content, commentInput.WriterId, now)
 	if err != nil {
 		return comment, err
 	}

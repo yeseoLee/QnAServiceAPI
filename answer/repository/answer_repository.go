@@ -3,9 +3,11 @@ package answer
 import (
 	"database/sql"
 	"fmt"
+	"strings"
 
 	"qna/datasource"
 	model "qna/domain"
+	"qna/util"
 )
 
 func NewAnswerRepository(ds datasource.DataSource) (*AnswerRepository, error) {
@@ -45,10 +47,14 @@ func (r *AnswerRepository) FindAllByQuestionId(id uint64, limit int, offset int)
 
 func (r *AnswerRepository) Create(answerInput *model.AnswerInput) (*model.Answer, error) {
 	var answer *model.Answer
+	now := util.DateTimeNow()
+
+	// type casting
+	images_str := strings.Join(answerInput.Images, ",")
 
 	// Query
-	result, err := r.DBEngine.Exec("INSERT INTO tbAnswer (`questionId`,`content`, `writerId`, `images`,`createdAt`) VALUES (?,?,?,?,now())",
-		answerInput.QuestionId, answerInput.Content, answerInput.WriterId, answerInput.Images)
+	result, err := r.DBEngine.Exec("INSERT INTO tbAnswer (`questionId`,`content`, `writerId`, `images`,`createdAt`) VALUES (?,?,?,?,?)",
+		answerInput.QuestionId, answerInput.Content, answerInput.WriterId, images_str, now)
 	if err != nil {
 		return nil, err
 	}
@@ -65,10 +71,18 @@ func (r *AnswerRepository) Create(answerInput *model.AnswerInput) (*model.Answer
 func (r *AnswerRepository) Update(id uint64, answerUpdate map[string]interface{}) (*model.Answer, error) {
 	// TODO: map key-value check & make query logic
 	var answer *model.Answer
+	now := util.DateTimeNow()
+
+	// type casting
+	images, ok := answerUpdate["Images"].([]string)
+	if !ok {
+		return answer, fmt.Errorf("unexpected parameter, wants: Images []string")
+	}
+	images_str := strings.Join(images, ",")
 
 	// Query
-	result, err := r.DBEngine.Exec("UPDATE tbAnswer SET content = ?, images = ?, UpdatedAt = now() WHERE id = ?",
-		answerUpdate["Content"], answerUpdate["Images"], id)
+	result, err := r.DBEngine.Exec("UPDATE tbAnswer SET content = ?, images = ?, UpdatedAt = ? WHERE id = ?",
+		answerUpdate["Content"], images_str, now, id)
 	if err != nil {
 		return answer, err
 	}
