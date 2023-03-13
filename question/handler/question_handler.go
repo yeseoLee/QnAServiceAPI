@@ -32,7 +32,7 @@ func NewQuestionHandler(e *echo.Echo, us domain.QuestionUseCase) {
 }
 
 func (h *QuestionHandler) GetQuestions(c echo.Context) error {
-	var req *domain.QuestionSearchOption
+	var req domain.QuestionSearchOption
 	var res []*domain.QuestionOutput
 
 	err := c.Bind(&req)
@@ -41,7 +41,7 @@ func (h *QuestionHandler) GetQuestions(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "bad request")
 	}
 
-	res, err = h.QUseCase.GetAll(req)
+	res, err = h.QUseCase.GetAll(&req)
 	if err != nil {
 		log.Print(err)
 		return c.String(http.StatusInternalServerError, "InternalServerError")
@@ -66,8 +66,8 @@ func (h *QuestionHandler) GetQuestion(c echo.Context) error {
 }
 
 func (h *QuestionHandler) AddQuestion(c echo.Context) error {
-	var req *domain.QuestionInput
-	var res *domain.QuestionOutput
+	var req domain.QuestionInput
+	var res uint64
 
 	err := c.Bind(&req)
 	if err != nil {
@@ -75,7 +75,7 @@ func (h *QuestionHandler) AddQuestion(c echo.Context) error {
 		return c.String(http.StatusBadRequest, "bad request")
 	}
 
-	res, err = h.QUseCase.Create(req)
+	res, err = h.QUseCase.Create(&req)
 	if err != nil {
 		log.Print(err)
 		return c.String(http.StatusInternalServerError, "InternalServerError")
@@ -84,7 +84,7 @@ func (h *QuestionHandler) AddQuestion(c echo.Context) error {
 }
 
 func (h *QuestionHandler) EditQuestion(c echo.Context) error {
-	var req *domain.QuestionInput
+	var req domain.QuestionInput
 	var res *domain.QuestionOutput
 
 	idString := c.FormValue("id")
@@ -100,6 +100,7 @@ func (h *QuestionHandler) EditQuestion(c echo.Context) error {
 	questionEdit := map[string]interface{}{}
 	questionEdit["Title"] = req.Title
 	questionEdit["Content"] = req.Content
+	questionEdit["Tags"] = req.Tags
 	questionEdit["Images"] = req.Images
 
 	res, err = h.QUseCase.Edit(idUint, questionEdit)

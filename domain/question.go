@@ -52,7 +52,7 @@ type QuestionRepository interface {
 	FindById(id uint64) (*Question, error)
 	FindAll(limit, offset int) ([]*Question, error)
 	//FindAllByTags(tags []string) ([]*Question, error)
-	Create(questionInput *QuestionInput) (*Question, error)
+	Create(questionInput *QuestionInput) (uint64, error)
 	Update(id uint64, questionUpdate map[string]interface{}) (*Question, error)
 	Delete(id uint64) error
 }
@@ -60,7 +60,7 @@ type QuestionRepository interface {
 type QuestionUseCase interface {
 	Get(id uint64) (*QuestionOutput, error)
 	GetAll(option *QuestionSearchOption) ([]*QuestionOutput, error)
-	Create(questionInput *QuestionInput) (*QuestionOutput, error)
+	Create(questionInput *QuestionInput) (uint64, error)
 	Edit(id uint64, questionEdit map[string]interface{}) (*QuestionOutput, error)
 	Accept(id uint64) error
 	Delete(id uint64) error

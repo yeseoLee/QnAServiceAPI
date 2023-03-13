@@ -22,6 +22,7 @@ func (u *questionUsecase) Get(id uint64) (*domain.QuestionOutput, error) {
 }
 
 func (u *questionUsecase) GetAll(option *domain.QuestionSearchOption) ([]*domain.QuestionOutput, error) {
+	// TODO: 검색 옵션 적용
 	qList, err := u.questionRepo.FindAll(option.Limit, option.Offset)
 	if err != nil {
 		return nil, err
@@ -34,13 +35,12 @@ func (u *questionUsecase) GetAll(option *domain.QuestionSearchOption) ([]*domain
 	return qoList, nil
 }
 
-func (u *questionUsecase) Create(questionInput *domain.QuestionInput) (*domain.QuestionOutput, error) {
-	q, err := u.questionRepo.Create(questionInput)
+func (u *questionUsecase) Create(questionInput *domain.QuestionInput) (uint64, error) {
+	qId, err := u.questionRepo.Create(questionInput)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	qo := u.transferOutput(q)
-	return qo, nil
+	return qId, nil
 }
 
 func (u *questionUsecase) Edit(id uint64, questionEdit map[string]interface{}) (*domain.QuestionOutput, error) {
