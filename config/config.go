@@ -4,11 +4,8 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/fsnotify/fsnotify"
 	"github.com/spf13/viper"
 )
-
-var Conf = Config{}
 
 type (
 	Config struct {
@@ -36,15 +33,11 @@ type (
 	}
 )
 
-// var once sync.Once
-// var instance *Config
+var instance Config
 
-// func GetInstance() *Config {
-// 	once.Do(func() {
-// 		instance = loadConfigJSON("config/config.json")
-// 	})
-// 	return instance
-// }
+func GetInstance() Config {
+	return instance
+}
 
 func init() {
 	profile := initProfile()
@@ -70,27 +63,29 @@ func setRuntimeConfig(profile string) {
 	if err != nil {
 		panic(err)
 	}
-	err = viper.Unmarshal(&Conf)
+	err = viper.Unmarshal(&instance)
 	if err != nil {
 		panic(err)
 	}
 
-	// 설정파일이 변경되면 이벤트를 핸들링하여 다시 언마샬링
-	viper.OnConfigChange(func(e fsnotify.Event) {
-		fmt.Println("Config file changed:", e.Name)
-		var err error
-		err = viper.ReadInConfig()
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-		err = viper.Unmarshal(&Conf)
-		if err != nil {
-			fmt.Println(err)
-			return
-		}
-	})
-	viper.WatchConfig()
+	/*
+		// 설정파일이 변경되면 이벤트를 핸들링하여 다시 언마샬링
+		viper.OnConfigChange(func(e fsnotify.Event) {
+			fmt.Println("Config file changed:", e.Name)
+			var err error
+			err = viper.ReadInConfig()
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+			err = viper.Unmarshal(&Conf)
+			if err != nil {
+				fmt.Println(err)
+				return
+			}
+		})
+		viper.WatchConfig()
+	*/
 }
 
 // 사용예시: Conf.DB.DBType

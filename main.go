@@ -26,20 +26,20 @@ func main() {
 }
 
 func setDataSource() (ds datasource.DataSource) {
-	if config.Conf.DB.DBType == datasource.DRIVER_NAME_MYSQL { // mysql
+	if config.GetInstance().DB.DBType == datasource.DRIVER_NAME_MYSQL { // mysql
 		ds = datasource.
 			MySQLInstance().
 			MySQLConnectionInfo(
-				config.Conf.DB.Mysql.Host,
-				config.Conf.DB.Mysql.Port,
-				config.Conf.DB.Mysql.DatabaseName,
-				config.Conf.DB.Mysql.User,
-				config.Conf.DB.Mysql.Password).
+				config.GetInstance().DB.Mysql.Host,
+				config.GetInstance().DB.Mysql.Port,
+				config.GetInstance().DB.Mysql.DatabaseName,
+				config.GetInstance().DB.Mysql.User,
+				config.GetInstance().DB.Mysql.Password).
 			MySQLConnect()
-	} else if config.Conf.DB.DBType == datasource.DRIVER_NAME_SQLITE { // sqlite
+	} else if config.GetInstance().DB.DBType == datasource.DRIVER_NAME_SQLITE { // sqlite
 		ds = datasource.
 			SqliteInstance().
-			SqliteConnectionInfo(config.Conf.DB.Sqlite.FilePath).
+			SqliteConnectionInfo(config.GetInstance().DB.Sqlite.FilePath).
 			SqliteConnect()
 	} else {
 		log.Fatal(fmt.Errorf("config.yaml DBType Error"))
@@ -58,5 +58,5 @@ func registRoutes(ds datasource.DataSource, e *echo.Echo) {
 }
 
 func runServer(e *echo.Echo) {
-	e.Logger.Fatal(e.Start(config.Conf.Service.Port))
+	e.Logger.Fatal(e.Start(config.GetInstance().Service.Port))
 }
