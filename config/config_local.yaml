@@ -3,9 +3,9 @@ service:
     port: ":8080"
     root: ""
 db:
-  dbType: mysql
+  dbType: sqlite3
   sqlite3:
-    filePath:"local.sqlite3"
+    filePath:"."./qna.db"
   mysql:
     host: "127.0.0.1"
     port: 3306
