@@ -38,6 +38,10 @@ nil 반환 처리 & nil 체크 [X]
 FindAll offset limit [O]
 DB INS/UPT now()대신 golang time 주입 [X]
 Update 개선 [X]
+
+### 오류 수정
+DB 조회 및 저장 시 배열 <-> 스트링 변환 로직 구성 [x]
+
 -----------------------
 ### Go Style
 error wrapping (예외 처리) [X]
