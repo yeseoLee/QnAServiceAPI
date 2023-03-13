@@ -1,0 +1,37 @@
+-- DROP TABLE IF EXISTS `tbQuestion`;
+CREATE TABLE IF NOT EXISTS tbQuestion ( 
+	id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
+	writerId VARCHAR(255) NOT NULL COMMENT '작성자id',
+	title VARCHAR(255) NOT NULL COMMENT '제목',
+	content TEXT COMMENT '내용',
+	tags TEXT COMMENT '태그',
+	images TEXT COMMENT '사진',
+	isAccept BOOLEAN NOT NULL CHECK (isAccept IN (0, 1)) COMMENT '답변 채택함',
+	createdAt DATETIME COMMENT '작성일자',
+	updatedAt DATETIME COMMENT '수정일자',
+	deletedAt DATETIME COMMENT '삭제일자'
+);
+
+-- DROP TABLE IF EXISTS `tbAnswer`;
+CREATE TABLE IF NOT EXISTS tbAnswer ( 
+	id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
+	questionId INTEGER UNIQUE NOT NULL COMMENT '질문Id',
+	writerId VARCHAR(255) NOT NULL COMMENT '작성자id',
+	content TEXT COMMENT '내용',
+	images TEXT COMMENT '사진',
+	isAccept BOOLEAN NOT NULL CHECK (isAccept IN (0, 1)) COMMENT '답변 채택받음',
+	createdAt DATETIME COMMENT '작성일자',
+	updatedAt DATETIME COMMENT '수정일자',
+	deletedAt DATETIME COMMENT '삭제일자'
+);
+
+-- DROP TABLE IF EXISTS `tbComment`;
+CREATE TABLE IF NOT EXISTS tbComment ( 
+	id INTEGER NOT NULL PRIMARY KEY AUTO_INCREMENT COMMENT 'id',
+	questionId INTEGER UNIQUE NOT NULL COMMENT '질문Id',
+	answerId INTEGER UNIQUE NOT NULL COMMENT '답변Id',
+	writerId VARCHAR(255) NOT NULL COMMENT '작성자id',
+	content TEXT COMMENT '내용',
+	createdAt DATETIME COMMENT '작성일자',
+	deletedAt DATETIME COMMENT '삭제일자'
+);

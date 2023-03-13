@@ -54,7 +54,7 @@ func (s sqlite) createTable() {
 		content TEXT,
 		tags TEXT,
 		images TEXT,
-		isAccept BOOLEAN NOT NULL CHECK (isAccept IN (0, 1)),
+		isAccept BOOLEAN NOT NULL CHECK (isAccept IN (0, 1)) DEFAULT 0,
 		createdAt DATETIME,
 		updatedAt DATETIME,
 		deletedAt DATETIME
@@ -67,7 +67,7 @@ func (s sqlite) createTable() {
 		writerId VARCHAR(255) NOT NULL,
 		content TEXT,
 		images TEXT,
-		isAccept BOOLEAN NOT NULL CHECK (isAccept IN (0, 1)),
+		isAccept BOOLEAN NOT NULL CHECK (isAccept IN (0, 1)) DEFAULT 0,
 		createdAt DATETIME,
 		updatedAt DATETIME,
 		deletedAt DATETIME
