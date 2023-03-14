@@ -67,7 +67,7 @@ func (s sqlite) createTable() {
 		writerId VARCHAR(255) NOT NULL,
 		content TEXT,
 		images TEXT,
-		isAccept BOOLEAN NOT NULL CHECK (isAccept IN (0, 1)) DEFAULT 0,
+		isAccepted BOOLEAN NOT NULL CHECK (isAccepted IN (0, 1)) DEFAULT 0,
 		createdAt DATETIME,
 		updatedAt DATETIME,
 		deletedAt DATETIME

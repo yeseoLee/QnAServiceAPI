@@ -19,7 +19,7 @@ CREATE TABLE IF NOT EXISTS tbAnswer (
 	writerId VARCHAR(255) NOT NULL COMMENT '작성자id',
 	content TEXT COMMENT '내용',
 	images TEXT COMMENT '사진',
-	isAccept BOOLEAN NOT NULL CHECK (isAccept IN (0, 1)) COMMENT '답변 채택받음',
+	isAccepted BOOLEAN NOT NULL CHECK (isAccepted IN (0, 1)) COMMENT '답변 채택받음',
 	createdAt DATETIME COMMENT '작성일자',
 	updatedAt DATETIME COMMENT '수정일자',
 	deletedAt DATETIME COMMENT '삭제일자'
