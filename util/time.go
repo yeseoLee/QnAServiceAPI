@@ -30,10 +30,13 @@ func DateTimeNow() string {
 	return now.Format(formatDateTime)
 }
 
-func TimeFromDateTime(dateTime string) time.Time {
+func DateTimeStringToTime(dateTime string) time.Time {
 	t, err := time.Parse(formatDateTime, dateTime)
 	if err != nil {
 		log.Print(err)
 	}
 	return t
+}
+func TimeToDateTimeString(t time.Time) (dateTime string) {
+	return t.Format(formatDateTime)
 }
