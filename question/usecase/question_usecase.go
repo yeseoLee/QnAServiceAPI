@@ -43,18 +43,17 @@ func (u *questionUsecase) Create(questionInput *domain.QuestionInput) (uint64, e
 	return qId, nil
 }
 
-func (u *questionUsecase) Edit(id uint64, questionEdit map[string]interface{}) (*domain.QuestionOutput, error) {
-	q, err := u.questionRepo.Update(id, questionEdit)
+func (u *questionUsecase) Edit(id uint64, questionEdit map[string]interface{}) error {
+	err := u.questionRepo.Update(id, questionEdit)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	qo := u.transferOutput(q)
-	return qo, nil
+	return nil
 }
 
 func (u *questionUsecase) Accept(id uint64) error {
 	// TODO: 채택 로직 개선
-	_, err := u.questionRepo.Update(id, map[string]interface{}{"IsAccept": true})
+	err := u.questionRepo.Update(id, map[string]interface{}{"IsAccept": true})
 	return err
 }
 
@@ -68,6 +67,7 @@ func (u *questionUsecase) transferOutput(question *domain.Question) *domain.Ques
 	qo.Title = question.Title
 	qo.Content = question.Content
 	qo.WriterId = question.WriterId
+	qo.Tags = question.Tags
 	qo.Images = question.Images
 	qo.UpdatedAt = question.UpdatedAt
 	return qo
