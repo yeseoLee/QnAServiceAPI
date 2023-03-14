@@ -1,6 +1,10 @@
 package question
 
-import "qna/domain"
+import (
+	"qna/domain"
+	"qna/util"
+	"strings"
+)
 
 type questionUsecase struct {
 	questionRepo domain.QuestionRepository
@@ -36,7 +40,8 @@ func (u *questionUsecase) GetAll(option *domain.QuestionSearchOption) ([]*domain
 }
 
 func (u *questionUsecase) Create(questionInput *domain.QuestionInput) (uint64, error) {
-	qId, err := u.questionRepo.Create(questionInput)
+	qdto := u.transferDAO(questionInput)
+	qId, err := u.questionRepo.Create(qdto)
 	if err != nil {
 		return 0, err
 	}
@@ -61,14 +66,25 @@ func (u *questionUsecase) Delete(id uint64) error {
 	return u.questionRepo.Delete(id)
 }
 
-func (u *questionUsecase) transferOutput(question *domain.Question) *domain.QuestionOutput {
+func (u *questionUsecase) transferDAO(question *domain.QuestionInput) *domain.QuestionDAO {
+	dao := &domain.QuestionDAO{}
+	dao.WriterId = question.WriterId
+	dao.Title = question.Title
+	dao.Content = question.Content
+	dao.Tags = strings.Join(question.Tags, ",")
+	dao.Images = strings.Join(question.Images, ",")
+	return dao
+}
+
+func (u *questionUsecase) transferOutput(dao *domain.QuestionDAO) *domain.QuestionOutput {
 	qo := &domain.QuestionOutput{}
-	qo.Id = question.Id
-	qo.Title = question.Title
-	qo.Content = question.Content
-	qo.WriterId = question.WriterId
-	qo.Tags = question.Tags
-	qo.Images = question.Images
-	qo.UpdatedAt = question.UpdatedAt
+	qo.Id = dao.Id
+	qo.WriterId = dao.WriterId
+	qo.Title = dao.Title
+	qo.Content = dao.Content
+	qo.Tags = strings.Split(dao.Tags, ",")
+	qo.Images = strings.Split(dao.Images, ",")
+	qo.IsAccept = util.Uint8ToBool(dao.IsAccept)
+	qo.UpdatedAt = util.DateTimeStringToTime(dao.UpdatedAt)
 	return qo
 }

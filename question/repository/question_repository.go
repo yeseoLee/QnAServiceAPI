@@ -23,47 +23,24 @@ type QuestionRepository struct {
 	DBEngine *sql.DB
 }
 
-func (r *QuestionRepository) FindById(id uint64) (*model.Question, error) {
-	var q model.Question
-	var isAccept uint8
-	var tags_str string
-	var images_str string
-	var createdAt string
-	var updatedAt string
-
+func (r *QuestionRepository) FindById(id uint64) (*model.QuestionDAO, error) {
+	var q model.QuestionDAO
 	// Query
 	row := r.DBEngine.QueryRow("SELECT id, title, content, writerId, tags, images, isAccept, createdAt, updatedAt FROM tbQuestion WHERE id = ?", id)
 
 	// Read
-	err := row.Scan(&q.Id, &q.Title, &q.Content, &q.WriterId, &tags_str, &images_str, &isAccept, &createdAt, &updatedAt)
+	err := row.Scan(&q.Id, &q.Title, &q.Content, &q.WriterId, &q.Tags, &q.Images, &q.IsAccept, &q.CreatedAt, &q.UpdatedAt)
 	switch {
 	case err == sql.ErrNoRows:
 		return nil, errors.New("no data")
 	case err != nil:
 		return nil, fmt.Errorf("query error: %w", err)
 	}
-
-	// type casting
-	q.Tags = strings.Split(tags_str, ",")
-	q.Images = strings.Split(images_str, ",")
-	if isAccept == 1 {
-		q.IsAccept = true
-	} else {
-		q.IsAccept = false
-	}
-	q.CreatedAt = util.TimeFromDateTime(createdAt)
-	q.UpdatedAt = util.TimeFromDateTime(updatedAt)
-
 	return &q, nil
 }
 
-func (r *QuestionRepository) FindAll(limit, offset int) ([]*model.Question, error) {
-	var qList []*model.Question
-	var isAccept uint8
-	var tags_str string
-	var images_str string
-	var createdAt string
-	var updatedAt string
+func (r *QuestionRepository) FindAll(limit, offset int) ([]*model.QuestionDAO, error) {
+	var qList []*model.QuestionDAO
 
 	// Query
 	rows, err := r.DBEngine.Query("SELECT id, title, content, writerId, tags, images, isAccept, createdAt, updatedAt FROM tbQuestion LIMIT ? OFFSET ?", limit, offset)
@@ -74,35 +51,20 @@ func (r *QuestionRepository) FindAll(limit, offset int) ([]*model.Question, erro
 
 	// Read
 	for rows.Next() {
-		var q model.Question
-		rows.Scan(&q.Id, &q.Title, &q.Content, &q.WriterId, &tags_str, &images_str, &isAccept, &createdAt, &updatedAt)
-
-		// type casting
-		q.Tags = strings.Split(tags_str, ",")
-		q.Images = strings.Split(images_str, ",")
-		if isAccept == 1 {
-			q.IsAccept = true
-		} else {
-			q.IsAccept = false
-		}
-		q.CreatedAt = util.TimeFromDateTime(createdAt)
-		q.UpdatedAt = util.TimeFromDateTime(updatedAt)
+		var q model.QuestionDAO
+		rows.Scan(&q.Id, &q.Title, &q.Content, &q.WriterId, &q.Tags, &q.Images, &q.IsAccept, &q.CreatedAt, &q.UpdatedAt)
 		qList = append(qList, &q)
 	}
 
 	return qList, nil
 }
 
-func (r *QuestionRepository) Create(questionInput *model.QuestionInput) (uint64, error) {
+func (r *QuestionRepository) Create(question *model.QuestionDAO) (uint64, error) {
 	now := util.DateTimeNow()
 
-	// type casting
-	tags_str := strings.Join(questionInput.Tags, ",")
-	images_str := strings.Join(questionInput.Images, ",")
-
 	// Query
-	result, err := r.DBEngine.Exec("INSERT INTO tbQuestion (`Title`,`Content`,`WriterId`, `Tags`, `Images`,`CreatedAt`,`UpdatedAt`) VALUES (?, ?, ?, ?, ?, ?, ?)",
-		questionInput.Title, questionInput.Content, questionInput.WriterId, tags_str, images_str, now, now)
+	result, err := r.DBEngine.Exec("INSERT INTO tbQuestion (`writerId`, `title`,`content`, `tags`, `images`,`createdAt`,`updatedAt`) VALUES (?, ?, ?, ?, ?, ?, ?)",
+		question.WriterId, question.Title, question.Content, question.Tags, question.Images, now, now)
 	if err != nil {
 		return 0, err
 	}
@@ -132,7 +94,7 @@ func (r *QuestionRepository) Update(id uint64, questionUpdate map[string]interfa
 	images_str := strings.Join(images, ",")
 
 	// Query
-	result, err := r.DBEngine.Exec("UPDATE tbQuestion SET Title = ?, Content = ?, Tags =?, Images = ?, updatedAt = ? WHERE id = ?",
+	result, err := r.DBEngine.Exec("UPDATE tbQuestion SET title = ?, content = ?, tags =?, images = ?, updatedAt = ? WHERE id = ?",
 		questionUpdate["Title"], questionUpdate["Content"], images_str, tags_str, now, id)
 	if err != nil {
 		return err

@@ -2,7 +2,6 @@ package domain
 
 import "time"
 
-// Entity
 type Question struct {
 	Id        uint64    `json:"id"`
 	WriterId  string    `json:"writerId"`
@@ -15,6 +14,20 @@ type Question struct {
 	UpdatedAt time.Time `json:"updatedAt"`
 	DeletedAt time.Time `json:"deletedAt"`
 	// TODO: 좋아요 수, 조회 수 -> Redis & Batch Insert
+}
+
+// DAO
+type QuestionDAO struct {
+	Id        uint64
+	WriterId  string
+	Title     string
+	Content   string
+	Tags      string
+	Images    string
+	IsAccept  uint8
+	CreatedAt string
+	UpdatedAt string
+	DeletedAt string
 }
 
 // DTO
@@ -49,10 +62,9 @@ type QuestionOrderOption struct {
 }
 
 type QuestionRepository interface {
-	FindById(id uint64) (*Question, error)
-	FindAll(limit, offset int) ([]*Question, error)
-	//FindAllByTags(tags []string) ([]*Question, error)
-	Create(questionInput *QuestionInput) (uint64, error)
+	FindById(id uint64) (*QuestionDAO, error)
+	FindAll(limit, offset int) ([]*QuestionDAO, error)
+	Create(question *QuestionDAO) (uint64, error)
 	Update(id uint64, questionUpdate map[string]interface{}) error
 	Delete(id uint64) error
 }
