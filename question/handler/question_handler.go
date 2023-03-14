@@ -53,7 +53,7 @@ func (h *QuestionHandler) GetQuestions(c echo.Context) error {
 func (h *QuestionHandler) GetQuestion(c echo.Context) error {
 	var res *domain.QuestionOutput
 
-	idString := c.FormValue("id")
+	idString := c.Param("id")
 	idUint, _ := strconv.ParseUint(idString, 10, 16)
 
 	res, err := h.QUseCase.Get(idUint)
@@ -85,9 +85,8 @@ func (h *QuestionHandler) AddQuestion(c echo.Context) error {
 
 func (h *QuestionHandler) EditQuestion(c echo.Context) error {
 	var req domain.QuestionInput
-	var res *domain.QuestionOutput
 
-	idString := c.FormValue("id")
+	idString := c.Param("id")
 	idUint, _ := strconv.ParseUint(idString, 10, 16)
 
 	err := c.Bind(&req)
@@ -103,16 +102,16 @@ func (h *QuestionHandler) EditQuestion(c echo.Context) error {
 	questionEdit["Tags"] = req.Tags
 	questionEdit["Images"] = req.Images
 
-	res, err = h.QUseCase.Edit(idUint, questionEdit)
+	err = h.QUseCase.Edit(idUint, questionEdit)
 	if err != nil {
 		log.Print(err)
 		return c.String(http.StatusInternalServerError, "InternalServerError")
 	}
-	return c.JSON(http.StatusOK, res)
+	return c.JSON(http.StatusOK, "editquestion")
 }
 
 func (h *QuestionHandler) DeleteQuestion(c echo.Context) error {
-	idString := c.FormValue("id")
+	idString := c.Param("id")
 	idUint, _ := strconv.ParseUint(idString, 10, 16)
 
 	err := h.QUseCase.Delete(idUint)

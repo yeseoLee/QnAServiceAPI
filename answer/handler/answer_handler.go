@@ -72,7 +72,7 @@ func (h *AnswerHandler) EditAnswer(c echo.Context) error {
 	var req *domain.AnswerInput
 	var res *domain.AnswerOutput
 
-	idString := c.FormValue("id")
+	idString := c.Param("id")
 	idUint, _ := strconv.ParseUint(idString, 10, 16)
 
 	err := c.Bind(&req)
@@ -96,7 +96,7 @@ func (h *AnswerHandler) EditAnswer(c echo.Context) error {
 }
 func (h *AnswerHandler) DeleteAnswer(c echo.Context) error {
 
-	idString := c.FormValue("id")
+	idString := c.Param("id")
 	idUint, _ := strconv.ParseUint(idString, 10, 16)
 
 	err := h.AUseCase.Delete(idUint)
