@@ -31,7 +31,7 @@ func DateTimeNow() string {
 }
 
 func TimeFromDateTime(dateTime string) time.Time {
-	t, err := time.Parse(dateTime, formatDateTime)
+	t, err := time.Parse(formatDateTime, dateTime)
 	if err != nil {
 		log.Print(err)
 	}
