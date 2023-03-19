@@ -1,0 +1,45 @@
+## Question
+
+### GET
+GET http://127.0.0.1:8080/questions HTTP/1.1
+Content-Type: application/json
+
+{
+	"title": "",
+	"content": "",
+	"writerId": "",
+	"limit": 10,
+	"offset": 0
+}
+
+### GET
+GET http://127.0.0.1:8080/questions/3 HTTP/1.1
+
+### POST
+POST http://127.0.0.1:8080/questions HTTP/1.1
+Content-Type: application/json
+
+{
+	"writerId": "test4",
+	"title": "Why Go4?",
+	"content": "Golang4",
+	"tags": ["programming4","go4"],
+	"images":["image41.png","image42.png"]
+}
+
+### PATCH
+PATCH  http://127.0.0.1:8080/questions/2 HTTP/1.1
+Content-Type: application/json
+
+{
+	"writerId": "tester",
+	"title": "DO JAVA?",
+	"content": "NO JAVA",
+	"tags": [],
+	"images": []
+}
+
+
+### DELETE
+DELETE http://127.0.0.1:8080/questions/2 HTTP/1.1
+
