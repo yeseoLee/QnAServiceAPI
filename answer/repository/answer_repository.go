@@ -22,12 +22,12 @@ type AnswerRepository struct {
 	DBEngine *sql.DB
 }
 
-func (r *AnswerRepository) FindAllByQuestionId(id uint64, limit int, offset int) ([]*model.Answer, error) {
+func (r *AnswerRepository) FindAllByQuestionId(id uint64, limit int, offset int) ([]*model.AnswerDAO, error) {
 
-	var aList []*model.Answer
+	var aList []*model.AnswerDAO
 
 	// Query
-	rows, err := r.DBEngine.Query("SELECT id, questionId, content, writerId, images, createdAt,updatedAt FROM tbAnswer WHERE questionId = ? LIMIT ? OFFSET ?", id, limit, offset)
+	rows, err := r.DBEngine.Query("SELECT id, questionId, content, writerId, images, isAccepted, createdAt, updatedAt FROM tbAnswer WHERE questionId = ? LIMIT ? OFFSET ?", id, limit, offset)
 	if err != nil {
 		return nil, err
 	}
@@ -35,8 +35,8 @@ func (r *AnswerRepository) FindAllByQuestionId(id uint64, limit int, offset int)
 
 	// Read
 	for rows.Next() {
-		var a model.Answer
-		rows.Scan(&a.Id, &a.QuestionId, &a.Content, &a.WriterId, &a.Images, &a.CreatedAt, &a.UpdatedAt)
+		var a model.AnswerDAO
+		rows.Scan(&a.Id, &a.QuestionId, &a.Content, &a.WriterId, &a.Images, &a.IsAccepted, &a.CreatedAt, &a.UpdatedAt)
 		aList = append(aList, &a)
 	}
 
@@ -45,38 +45,32 @@ func (r *AnswerRepository) FindAllByQuestionId(id uint64, limit int, offset int)
 
 // func (r *AnswerRepository) FindAllByWriterId(writerId string, limit int, offset int) ([]*model.Answer, error) {}
 
-func (r *AnswerRepository) Create(answerInput *model.AnswerInput) (*model.Answer, error) {
-	var answer *model.Answer
+func (r *AnswerRepository) Create(answer *model.AnswerDAO) (uint64, error) {
 	now := util.DateTimeNow()
 
-	// type casting
-	images_str := strings.Join(answerInput.Images, ",")
-
 	// Query
-	result, err := r.DBEngine.Exec("INSERT INTO tbAnswer (`questionId`,`content`, `writerId`, `images`,`createdAt`) VALUES (?,?,?,?,?)",
-		answerInput.QuestionId, answerInput.Content, answerInput.WriterId, images_str, now)
+	result, err := r.DBEngine.Exec("INSERT INTO tbAnswer (`questionId`,`content`, `writerId`, `images`,`createdAt` ,`updatedAt`) VALUES (?,?,?,?,?,?)",
+		answer.QuestionId, answer.Content, answer.WriterId, answer.Images, now, now)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
 
 	// Check
 	id, err := result.LastInsertId()
-	answer.Id = uint64(id)
 	if err != nil {
-		return answer, err
+		return uint64(id), err
 	}
-	return answer, nil
+	return uint64(id), nil
 }
 
-func (r *AnswerRepository) Update(id uint64, answerUpdate map[string]interface{}) (*model.Answer, error) {
+func (r *AnswerRepository) Update(id uint64, answerUpdate map[string]interface{}) error {
 	// TODO: map key-value check & make query logic
-	var answer *model.Answer
 	now := util.DateTimeNow()
 
 	// type casting
 	images, ok := answerUpdate["Images"].([]string)
 	if !ok {
-		return answer, fmt.Errorf("unexpected parameter, wants: Images []string")
+		return fmt.Errorf("unexpected parameter, wants: Images []string")
 	}
 	images_str := strings.Join(images, ",")
 
@@ -84,23 +78,23 @@ func (r *AnswerRepository) Update(id uint64, answerUpdate map[string]interface{}
 	result, err := r.DBEngine.Exec("UPDATE tbAnswer SET content = ?, images = ?, UpdatedAt = ? WHERE id = ?",
 		answerUpdate["Content"], images_str, now, id)
 	if err != nil {
-		return answer, err
+		return err
 	}
 
 	// Check
 	rows, err := result.RowsAffected()
 	if err != nil {
-		return answer, err
+		return err
 	}
 	if rows != 1 {
-		return answer, fmt.Errorf("expected to affect 1 row, affected %d", rows)
+		return fmt.Errorf("expected to affect 1 row, affected %d", rows)
 	}
-	return answer, nil
+	return nil
 }
 
 func (r *AnswerRepository) Delete(id uint64) error {
 	// Query
-	result, err := r.DBEngine.Exec("DELETE tbAnswer WHERE id = ?", id)
+	result, err := r.DBEngine.Exec("DELETE FROM `tbAnswer` WHERE id = ?", id)
 	if err != nil {
 		return err
 	}

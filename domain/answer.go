@@ -16,6 +16,19 @@ type Answer struct {
 	// TODO: 좋아요 수, 조회 수 -> Redis & Batch Insert
 }
 
+// DAO
+type AnswerDAO struct {
+	Id         uint64
+	QuestionId uint64
+	WriterId   string
+	Content    string
+	Images     string
+	IsAccepted uint8
+	CreatedAt  string
+	UpdatedAt  string
+	DeletedAt  string
+}
+
 // DTO
 type AnswerInput struct {
 	QuestionId uint64   `json:"questionId"`
@@ -31,7 +44,6 @@ type AnswerOutput struct {
 	Content    string    `json:"content"`
 	Images     []string  `json:"images"`
 	IsAccepted bool      `json:"isAccepted"`
-	CreatedAt  time.Time `json:"createdAt"`
 	UpdatedAt  time.Time `json:"updatedAt"`
 }
 
@@ -45,17 +57,17 @@ type AnswerSearchOption struct {
 type AnswerOrderOption struct{}
 
 type AnswerRepository interface {
-	FindAllByQuestionId(id uint64, limit int, offset int) ([]*Answer, error)
+	FindAllByQuestionId(id uint64, limit int, offset int) ([]*AnswerDAO, error)
 	//FindAllByWriterId(writerId string, limit int, offset int) ([]*Answer, error)
-	Create(answerInput *AnswerInput) (*Answer, error)
-	Update(id uint64, answerUpdate map[string]interface{}) (*Answer, error)
+	Create(answer *AnswerDAO) (uint64, error)
+	Update(id uint64, answerUpdate map[string]interface{}) error
 	Delete(id uint64) error
 }
 
 type AnswerUseCase interface {
 	GetAll(option *AnswerSearchOption) ([]*AnswerOutput, error)
-	Create(answerInput *AnswerInput) (*AnswerOutput, error)
-	Edit(id uint64, answerUpdate map[string]interface{}) (*AnswerOutput, error)
+	Create(answerInput *AnswerInput) (uint64, error)
+	Edit(id uint64, answerUpdate map[string]interface{}) error
 	Accept(id uint64) error
 	Delete(id uint64) error
 }

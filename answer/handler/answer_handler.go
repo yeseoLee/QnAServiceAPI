@@ -23,8 +23,8 @@ func NewAnswerHandler(e *echo.Echo, us domain.AnswerUseCase) {
 	}
 	e_answer := e.Group("/answers")
 	{
-		e_answer.GET("/:questionId", handler.GetAnswers)
-		e_answer.POST("/:id", handler.AddAnswer)
+		e_answer.GET("", handler.GetAnswers)
+		e_answer.POST("", handler.AddAnswer)
 		e_answer.PATCH("/:id", handler.EditAnswer)
 		e_answer.DELETE("/:id", handler.DeleteAnswer)
 	}
@@ -51,7 +51,7 @@ func (h *AnswerHandler) GetAnswers(c echo.Context) error {
 
 func (h *AnswerHandler) AddAnswer(c echo.Context) error {
 	var req *domain.AnswerInput
-	var res *domain.AnswerOutput
+	var res uint64
 
 	err := c.Bind(&req)
 	if err != nil {
@@ -70,7 +70,6 @@ func (h *AnswerHandler) AddAnswer(c echo.Context) error {
 
 func (h *AnswerHandler) EditAnswer(c echo.Context) error {
 	var req *domain.AnswerInput
-	var res *domain.AnswerOutput
 
 	idString := c.Param("id")
 	idUint, _ := strconv.ParseUint(idString, 10, 16)
@@ -86,16 +85,15 @@ func (h *AnswerHandler) EditAnswer(c echo.Context) error {
 	answerEdit["Content"] = req.Content
 	answerEdit["Images"] = req.Images
 
-	res, err = h.AUseCase.Edit(idUint, answerEdit)
+	err = h.AUseCase.Edit(idUint, answerEdit)
 	if err != nil {
 		log.Print(err)
 		return c.String(http.StatusInternalServerError, "InternalServerError")
 	}
 
-	return c.JSON(http.StatusOK, res)
+	return c.JSON(http.StatusOK, "EditAnswer")
 }
 func (h *AnswerHandler) DeleteAnswer(c echo.Context) error {
-
 	idString := c.Param("id")
 	idUint, _ := strconv.ParseUint(idString, 10, 16)
 

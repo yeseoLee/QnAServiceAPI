@@ -1,6 +1,10 @@
 package answer
 
-import "qna/domain"
+import (
+	"qna/domain"
+	"qna/util"
+	"strings"
+)
 
 type answerUsecase struct {
 	answerRepo domain.AnswerRepository
@@ -25,27 +29,26 @@ func (u *answerUsecase) GetAll(option *domain.AnswerSearchOption) ([]*domain.Ans
 	return qoList, nil
 }
 
-func (u *answerUsecase) Create(answerInput *domain.AnswerInput) (*domain.AnswerOutput, error) {
-	q, err := u.answerRepo.Create(answerInput)
+func (u *answerUsecase) Create(answerInput *domain.AnswerInput) (uint64, error) {
+	adto := u.transferDAO(answerInput)
+	aId, err := u.answerRepo.Create(adto)
 	if err != nil {
-		return nil, err
+		return 0, err
 	}
-	qo := u.transferOutput(q)
-	return qo, nil
+	return aId, nil
 }
 
-func (u *answerUsecase) Edit(id uint64, answerEdit map[string]interface{}) (*domain.AnswerOutput, error) {
-	q, err := u.answerRepo.Update(id, answerEdit)
+func (u *answerUsecase) Edit(id uint64, answerEdit map[string]interface{}) error {
+	err := u.answerRepo.Update(id, answerEdit)
 	if err != nil {
-		return nil, err
+		return err
 	}
-	qo := u.transferOutput(q)
-	return qo, nil
+	return nil
 }
 
 func (u *answerUsecase) Accept(id uint64) error {
 	// TODO: 채택 로직 개선
-	_, err := u.answerRepo.Update(id, map[string]interface{}{"IsAccept": true})
+	err := u.answerRepo.Update(id, map[string]interface{}{"IsAccept": true})
 	return err
 }
 
@@ -53,11 +56,23 @@ func (u *answerUsecase) Delete(id uint64) error {
 	return u.answerRepo.Delete(id)
 }
 
-func (u *answerUsecase) transferOutput(answer *domain.Answer) *domain.AnswerOutput {
+func (u *answerUsecase) transferDAO(answer *domain.AnswerInput) *domain.AnswerDAO {
+	dao := &domain.AnswerDAO{}
+	dao.QuestionId = answer.QuestionId
+	dao.WriterId = answer.WriterId
+	dao.Content = answer.Content
+	dao.Images = strings.Join(answer.Images, ",")
+	return dao
+}
+
+func (u *answerUsecase) transferOutput(dao *domain.AnswerDAO) *domain.AnswerOutput {
 	ao := &domain.AnswerOutput{}
-	ao.Id = answer.Id
-	ao.Content = answer.Content
-	ao.WriterId = answer.WriterId
-	ao.Images = answer.Images
+	ao.Id = dao.Id
+	ao.QuestionId = dao.QuestionId
+	ao.Content = dao.Content
+	ao.WriterId = dao.WriterId
+	ao.Images = strings.Split(dao.Images, ",")
+	ao.IsAccepted = util.Uint8ToBool(dao.IsAccepted)
+	ao.UpdatedAt = util.DateTimeStringToTime(dao.UpdatedAt)
 	return ao
 }
