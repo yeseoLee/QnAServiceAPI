@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"log"
+	"qna/answer"
 	"qna/config"
 	"qna/datasource"
 	"qna/question"
@@ -55,6 +56,7 @@ func registMiddleware(e *echo.Echo) {
 func registRoutes(ds datasource.DataSource, e *echo.Echo) {
 	// Question
 	question.RegistQuestionRoute(ds, e)
+	answer.RegistAnswerRoute(ds, e)
 }
 
 func runServer(e *echo.Echo) {
