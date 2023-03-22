@@ -14,6 +14,17 @@ type Comment struct {
 	// TODO: 좋아요 수 -> Redis & Batch Insert
 }
 
+// DAO
+type CommentDAO struct {
+	Id         uint64
+	QuestionId uint64
+	AnswerId   uint64
+	WriterId   string
+	Content    string
+	CreatedAt  string
+	DeletedAt  string
+}
+
 // DTO
 type CommentInput struct {
 	QuestionId uint64 `json:"questionId"`
