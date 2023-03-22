@@ -18,6 +18,6 @@ func (u *commentUsecase) GetAll(limit, offset int) ([]*domain.CommentOutput, err
 func (u *commentUsecase) Create(commentInput *domain.CommentInput) (*domain.CommentOutput, error) {
 	return nil, nil
 }
-func (u *commentUsecase) Delete(id uint) error {
+func (u *commentUsecase) Delete(id uint64) error {
 	return nil
 }

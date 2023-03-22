@@ -4,9 +4,9 @@ import "time"
 
 // Entity
 type Comment struct {
-	Id         uint      `json:"id"`
-	QuestionId uint      `json:"questionId"`
-	AnswerId   uint      `json:"answerId"`
+	Id         uint64    `json:"id"`
+	QuestionId uint64    `json:"questionId"`
+	AnswerId   uint64    `json:"answerId"`
 	WriterId   string    `json:"writerId"`
 	Content    string    `json:"content"`
 	CreatedAt  time.Time `json:"createdAt"`
@@ -16,15 +16,16 @@ type Comment struct {
 
 // DTO
 type CommentInput struct {
-	QuestionId uint   `json:"questionId"`
-	AnswerId   uint   `json:"answerId"`
+	QuestionId uint64 `json:"questionId"`
+	AnswerId   uint64 `json:"answerId"`
 	WriterId   string `json:"writerId"`
 	Content    string `json:"content"`
 }
 
 type CommentOutput struct {
-	QuestionId uint      `json:"questionId"`
-	AnswerId   uint      `json:"answerId"`
+	Id         uint64    `json:"id"`
+	QuestionId uint64    `json:"questionId"`
+	AnswerId   uint64    `json:"answerId"`
 	WriterId   string    `json:"writerId"`
 	Content    string    `json:"content"`
 	CreatedAt  time.Time `json:"createdAt"`
@@ -32,13 +33,13 @@ type CommentOutput struct {
 }
 
 type CommentRepository interface {
-	FindAllByPostId(id uint, limit int, offset int) ([]*Comment, error)
+	FindAllByPostId(id uint64, limit int, offset int) ([]*Comment, error)
 	Create(commentInput *CommentInput) (*Comment, error)
-	Delete(id uint) error
+	Delete(id uint64) error
 }
 
 type CommentUseCase interface {
 	GetAll(limit, offset int) ([]*CommentOutput, error)
 	Create(commentInput *CommentInput) (*CommentOutput, error)
-	Delete(id uint) error
+	Delete(id uint64) error
 }

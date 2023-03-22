@@ -20,7 +20,7 @@ type CommentRepository struct {
 	DBEngine *sql.DB
 }
 
-func (r *CommentRepository) FindAllByPostId(id uint, limit int, offset int) ([]*model.Comment, error) {
+func (r *CommentRepository) FindAllByPostId(id uint64, limit int, offset int) ([]*model.Comment, error) {
 
 	var cList []*model.Comment
 
@@ -54,14 +54,14 @@ func (r *CommentRepository) Create(commentInput *model.CommentInput) (*model.Com
 
 	// Check
 	id, err := result.LastInsertId()
-	comment.Id = uint(id)
+	comment.Id = uint64(id)
 	if err != nil {
 		return comment, err
 	}
 	return comment, nil
 }
 
-func (r *CommentRepository) Delete(id uint) error {
+func (r *CommentRepository) Delete(id uint64) error {
 	// Query
 	result, err := r.DBEngine.Exec("DELETE FROM `tbQuestion` WHERE id = ?", id)
 	if err != nil {
